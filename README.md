@@ -1,111 +1,160 @@
-# firestore-read MCP server
+# firestore-read MCP Server
 
-Allow Claude the ability to read your existing firestore collections.
+A Claude MCP server that enables Claude to read and interact with your existing Firestore collections directly.
 
-## Components
+## Features
 
-### Resources
+This server allows Claude to:
+- List all collections in your Firestore database
+- Read documents from any collection
+- Create new documents in existing collections
+- Handle complex Firestore data types including timestamps and document references
 
-The server implements a simple note storage system with:
-- Custom note:// URI scheme for accessing individual notes
-- Each note resource has a name, description and text/plain mimetype
+## Tools
 
-### Prompts
+The server implements three main tools:
 
-The server provides a single prompt:
-- summarize-notes: Creates summaries of all stored notes
-  - Optional "style" argument to control detail level (brief/detailed)
-  - Generates prompt combining all current notes with style preference
+### 1. list-collections
+Lists all collections in the Firestore database.
+- No parameters required
+- Returns an array of collection names
 
-### Tools
+### 2. get-collection
+Retrieves all documents from a specified collection.
+- Required parameter: `collection` (string)
+- Returns array of documents with their IDs and data
 
-The server implements one tool:
-- add-note: Adds a new note to the server
-  - Takes "name" and "content" as required string arguments
-  - Updates server state and notifies clients of resource changes
+### 3. create-document
+Creates a new document in a specified collection.
+- Required parameters: 
+  - `collection` (string)
+  - `document_data` (object)
+- Returns confirmation message with new document ID
 
 ## Configuration
 
-[TODO: Add configuration details specific to your implementation]
+### Environment Variables
 
-## Quickstart
+The server requires two environment variables:
+```bash
+FIREBASE_API_KEY=your-firebase-web-api-key
+FIREBASE_PROJECT_ID=your-firebase-project-id
+```
 
-### Install
+Note: These are web client credentials and are safe to expose in client-side code.
 
-#### Claude Desktop
+## Installation
 
-On MacOS: `~/Library/Application\ Support/Claude/claude_desktop_config.json`
-On Windows: `%APPDATA%/Claude/claude_desktop_config.json`
+### Prerequisites
+- Python 3.11 or higher
+- `uv` package manager
 
-<details>
-  <summary>Development/Unpublished Servers Configuration</summary>
-  ```
+### Dependencies
+```bash
+uv pip install firebase-admin
+uv pip install python-dotenv
+```
+
+### Claude Desktop Configuration
+
+Add this to your Claude Desktop config file:
+
+#### MacOS
+Location: `~/Library/Application Support/Claude/claude_desktop_config.json`
+
+#### Windows
+Location: `%APPDATA%/Claude/claude_desktop_config.json`
+
+```json
+{
   "mcpServers": {
     "firestore-read": {
       "command": "uv",
       "args": [
         "--directory",
-        "/Users/administrator/CES Society/A C C E L E R A T E/Claude MCP/firestore-read",
+        "/path/to/your/firestore-read",
         "run",
         "firestore-read"
-      ]
+      ],
+      "env": {
+        "FIREBASE_API_KEY": "your-firebase-web-api-key",
+        "FIREBASE_PROJECT_ID": "your-firebase-project-id"
+      }
     }
   }
-  ```
-</details>
+}
+```
 
-<details>
-  <summary>Published Servers Configuration</summary>
-  ```
-  "mcpServers": {
-    "firestore-read": {
-      "command": "uvx",
-      "args": [
-        "firestore-read"
-      ]
+## Usage Examples
+
+Here are some example interactions with Claude using this server:
+
+### Listing Collections
+```
+Human: List all collections in my Firestore database.
+
+Claude: I'll list all collections in your database:
+[
+  {
+    "name": "users"
+  },
+  {
+    "name": "projects"
+  },
+  {
+    "name": "tasks"
+  }
+]
+```
+
+### Reading Documents
+```
+Human: Show me the documents in the users collection.
+
+Claude: Here are the documents from the users collection:
+[
+  {
+    "id": "user123",
+    "data": {
+      "name": "John Doe",
+      "email": "john@example.com",
+      "createdAt": "2024-01-01T00:00:00Z"
     }
   }
-  ```
-</details>
+]
+```
+
+### Creating Documents
+```
+Human: Create a new test document.
+
+Claude: I'll create a new test document:
+Created new document with ID abc123 in 'test'
+```
 
 ## Development
 
-### Building and Publishing
-
-To prepare the package for distribution:
-
-1. Sync dependencies and update lockfile:
-```bash
-uv sync
-```
-
-2. Build package distributions:
-```bash
-uv build
-```
-
-This will create source and wheel distributions in the `dist/` directory.
-
-3. Publish to PyPI:
-```bash
-uv publish
-```
-
-Note: You'll need to set PyPI credentials via environment variables or command flags:
-- Token: `--token` or `UV_PUBLISH_TOKEN`
-- Or username/password: `--username`/`UV_PUBLISH_USERNAME` and `--password`/`UV_PUBLISH_PASSWORD`
-
 ### Debugging
 
-Since MCP servers run over stdio, debugging can be challenging. For the best debugging
-experience, we strongly recommend using the [MCP Inspector](https://github.com/modelcontextprotocol/inspector).
-
-
-You can launch the MCP Inspector via [`npm`](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) with this command:
+For debugging, you can use the MCP Inspector. Install and run it using:
 
 ```bash
-npx @modelcontextprotocol/inspector uv --directory /Users/administrator/CES Society/A C C E L E R A T E/Claude MCP/firestore-read run firestore-read
+npx @modelcontextprotocol/inspector uv --directory /path/to/your/firestore-read run firestore-read
 ```
 
+### Error Handling
 
-Upon launching, the Inspector will display a URL that you can access in your browser to begin debugging.
+The server includes error handling for:
+- Firebase initialization failures
+- Invalid collection names
+- Document creation errors
+- Invalid data types
+- Missing environment variables
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
