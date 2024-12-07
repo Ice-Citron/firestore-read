@@ -6,11 +6,12 @@ from mcp.server.models import InitializationOptions
 import mcp.types as types
 from mcp.server import NotificationOptions, Server
 import mcp.server.stdio
+import os
 
 # Initialize Firebase with web config
 config = {
-    'apiKey': "AIzaSyBrMuonUiO9uiRUANx0C28PDXDdVSchoCQ",
-    'projectId': "nosco-app-b5be4"
+    'apiKey': os.environ.get('FIREBASE_API_KEY'),
+    'projectId': os.environ.get('FIREBASE_PROJECT_ID')
 }
 
 try:
@@ -26,11 +27,11 @@ server = Server("firestore-read")
 
 class FirestoreEncoder(json.JSONEncoder):
     def default(self, obj):
-        from google.cloud.firestore import DatetimeWithNanoseconds  # Add this import at the top
+        from google.cloud.firestore_v1._helpers import DatetimeWithNanoseconds
         
         if isinstance(obj, DatetimeWithNanoseconds):
             return obj.isoformat()
-        elif hasattr(obj, 'path'):  # Handle document references
+        elif hasattr(obj, 'path'):
             return str(obj.path)
         return super().default(obj)
 
