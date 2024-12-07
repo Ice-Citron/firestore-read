@@ -1,0 +1,20 @@
+[project]
+name = "firestore-read"
+version = "0.1.0"
+description = "Firestore MCP Server for reading Firestore collections"
+readme = "README.md"
+authors = [
+    { name = "Ice-Citron", email = "shng2025@gmail.com" }
+]
+requires-python = ">=3.11"
+dependencies = [
+    "mcp>=1.1.0",
+    "firebase-admin>=6.2.0",
+]
+
+[project.scripts]
+firestore-read = "firestore_read:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
