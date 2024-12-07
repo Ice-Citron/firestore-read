@@ -2,6 +2,8 @@
 
 A Claude MCP server that enables Claude to read and interact with your existing Firestore collections directly.
 
+More future updates will likely be coming soon, for my personal use, or if others are very keen on seeing updates here. I am doing this personally because when developing ReactJS apps, I often have to face the hustle of continuously having to show Claude-Sonnet-3.5 what my current Firestore collections and document fiels looks like, else it will hallucinate, and always make weird assumptions and just ruins everything. Hence, this allows programmers to swiftly allow Claude-3.5 to readily read your firestore collections easily (given everything is set to public, idk this will likely only be improved in the future if I really need to or that I get requests).
+
 ## Features
 
 This server allows Claude to:
