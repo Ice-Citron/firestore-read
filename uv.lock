@@ -235,12 +235,14 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "firebase-admin" },
+    { name = "google-cloud-firestore" },
     { name = "mcp" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "firebase-admin", specifier = ">=6.2.0" },
+    { name = "google-cloud-firestore", specifier = ">=2.11.1" },
     { name = "mcp", specifier = ">=1.1.0" },
 ]
 

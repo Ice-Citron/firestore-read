@@ -1,9 +1,8 @@
 from . import server
-import asyncio
 
 def main():
-    """Main entry point for the package."""
-    asyncio.run(server.main())
-
-# Optionally expose other important items at package level
-__all__ = ['main', 'server']
+    import asyncio
+    try:
+        asyncio.run(server.main())
+    except Exception as e:
+        print(f"Error running server: {e}")
